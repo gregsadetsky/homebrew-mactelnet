@@ -1,8 +1,8 @@
 class Mactelnet < Formula
   desc "Telnet/console client for MikroTik RouterOS over Layer 2 (MAC-Telnet)"
   homepage "https://github.com/haakonnessjoen/MAC-Telnet"
-  url "https://github.com/haakonnessjoen/MAC-Telnet/archive/refs/tags/v0.6.3.tar.gz"
-  sha256 "1b685568bddfe8d41cf70242a8db98968154334647b2c98c389596604e3fc38a"
+  url "https://github.com/haakonnessjoen/MAC-Telnet/archive/refs/tags/v0.6.2.tar.gz"
+  sha256 "5332e09010ae34258061012c4c2a184bc0a3a7514245b981fe65557a91d5e1ad"
   license "GPL-2.0-or-later"
 
   head "https://github.com/haakonnessjoen/MAC-Telnet.git", branch: "master"
@@ -10,13 +10,6 @@ class Mactelnet < Formula
   livecheck do
     url :stable
     regex(/^v?(\d+(?:\.\d+)+)$/i)
-  end
-
-  bottle do
-    root_url "https://github.com/gregsadetsky/homebrew-mactelnet/releases/download/mactelnet-0.6.3"
-    rebuild 1
-    sha256 arm64_tahoe:  "2e33a031613d539e54f69d98fb29685ec2434b62a679011b916cfa48e55bd453"
-    sha256 x86_64_linux: "c8288ad215748d72598d6c9278af5138bee5ca5c887eae7cdfe133f454e976bb"
   end
 
   depends_on "autoconf" => :build
