@@ -15,6 +15,10 @@ class Mactelnet < Formula
   depends_on "openssl@3"
 
   def install
+    # Upstream's install-exec-hook chowns mactelnetd.users to root, which is
+    # impossible in a non-root Homebrew install; chmod 600 still applies.
+    inreplace "config/Makefile.am", /^\s*chown root.*$\n/, ""
+
     system "./autogen.sh"
     system "./configure", "--disable-silent-rules",
                           "--sysconfdir=#{etc}",
