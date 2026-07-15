@@ -63,15 +63,18 @@ mactelnet <identity-or-MAC> # connect; prompts for RouterOS login/password
 - Therefore: failing tests ⇒ no bottles ⇒ no release, and no bottle is ever
   published for a platform it wasn't built *and* tested on.
 
-- `autobump.yml` runs daily: it livechecks upstream for a new release tag and, if
-  one exists, opens a version-bump PR automatically (updated url + sha256). CI then
-  builds/tests bottles on that PR as usual; releasing is still the one manual
-  pr-pull dispatch. **One-time setup for full automation:** create a fine-grained
-  PAT with contents + pull-requests write on this repo and store it as the
-  `BUMP_TOKEN` secret (`gh secret set BUMP_TOKEN -R gregsadetsky/homebrew-mactelnet`).
-  Without it, bump PRs are still opened but GitHub won't auto-run test-bot on them
-  (PRs created by the default workflow token don't trigger workflows) — push to the
-  PR branch or close/reopen it to start CI.
+- **Releases are fully automatic.** `autobump.yml` runs daily: it livechecks
+  upstream and, on a new release tag, opens a version-bump PR (updated url +
+  sha256) using the `BUMP_TOKEN` PAT secret. CI builds/tests bottles on that PR;
+  when it goes green, `autopublish.yml` (triggered by the CI completion, guarded
+  to `bump-*` branches from this repo only) runs pr-pull automatically: merge,
+  upload bottles, stamp the formula. Human-authored PRs are untouched — release
+  those with the manual pr-pull dispatch. The whole chain was rehearsed end-to-end
+  (0.6.2→0.6.3) with zero manual steps.
+- `BUMP_TOKEN` is a fine-grained PAT (contents + pull-requests write on this repo),
+  stored via `gh secret set BUMP_TOKEN`. It exists because PRs and dispatches made
+  with the default workflow token don't trigger other workflows (GitHub
+  anti-recursion), and replacing existing release assets needs owner scope.
 
 Workflows are the stock output of `brew tap-new` (Homebrew's official template),
 except: the template's `tests.yml` shipped an invalid job-level `options:` key
