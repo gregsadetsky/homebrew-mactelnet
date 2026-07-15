@@ -46,7 +46,10 @@ mactelnet <identity-or-MAC> # connect; prompts for RouterOS login/password
 
 ## What this tap changes relative to upstream
 
-- **No source changes.** The formula builds the pristine `v0.6.3` tag tarball.
+- **No changes to the program source.** The formula builds a pristine upstream
+  *release* tarball — whichever tag it currently pins (v0.6.3 at the time of
+  writing; the daily autobump advances the pin to each new upstream release, see
+  below). It never patches the C source.
 - One build-time tweak: the line `chown root .../mactelnetd.users` is removed from
   `config/Makefile.am` before compiling, because a non-root Homebrew install cannot
   chown to root (the file still gets `chmod 600`). This only affects the optional
@@ -57,11 +60,13 @@ mactelnet <identity-or-MAC> # connect; prompts for RouterOS login/password
 - `tests.yml` runs `brew test-bot` on every PR: it builds the formula on each
   matrix platform, runs the formula's `test do` block on that same platform, and
   uploads the resulting bottles as CI artifacts.
-- Publishing is manual and can only promote a green PR: run the **brew pr-pull**
-  workflow (`publish.yml`) with the PR number. It pulls the tested bottle
-  artifacts, uploads them, and commits the `bottle do` block to the formula.
-- Therefore: failing tests ⇒ no bottles ⇒ no release, and no bottle is ever
-  published for a platform it wasn't built *and* tested on.
+- Publishing can only promote a **green** PR (pr-pull pulls that PR's tested bottle
+  artifacts, uploads them, and commits the `bottle do` block). Two ways it runs:
+  automatically for autobump's `bump-*` PRs (see next section), or manually via the
+  **brew pr-pull** workflow (`publish.yml`) with a PR number — used for
+  human-authored PRs.
+- Invariant either way: failing tests ⇒ no bottles ⇒ no release, and no bottle is
+  ever published for a platform it wasn't built *and* tested on.
 
 - **Releases are fully automatic.** `autobump.yml` runs daily: it livechecks
   upstream and, on a new release tag, opens a version-bump PR (updated url +
