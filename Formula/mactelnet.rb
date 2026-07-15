@@ -12,6 +12,13 @@ class Mactelnet < Formula
     regex(/^v?(\d+(?:\.\d+)+)$/i)
   end
 
+  bottle do
+    root_url "https://github.com/gregsadetsky/homebrew-mactelnet/releases/download/mactelnet-0.6.3"
+    rebuild 1
+    sha256 arm64_tahoe:  "2e33a031613d539e54f69d98fb29685ec2434b62a679011b916cfa48e55bd453"
+    sha256 x86_64_linux: "c8288ad215748d72598d6c9278af5138bee5ca5c887eae7cdfe133f454e976bb"
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
