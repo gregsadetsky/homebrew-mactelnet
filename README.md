@@ -11,21 +11,21 @@ their code (see "What this tap changes" below).
 ## Install
 
 ```sh
-brew trust lepetitg/mactelnet          # one-time, Homebrew ≥ 6 requires trusting third-party taps
-brew install lepetitg/mactelnet/mactelnet
+brew trust gregsadetsky/mactelnet          # one-time, Homebrew ≥ 6 requires trusting third-party taps
+brew install gregsadetsky/mactelnet/mactelnet
 ```
 
 Or the two-step form:
 
 ```sh
-brew tap lepetitg/mactelnet
+brew tap gregsadetsky/mactelnet
 brew install mactelnet
 ```
 
 To build the latest upstream git HEAD instead of the pinned release:
 
 ```sh
-brew install --HEAD lepetitg/mactelnet/mactelnet
+brew install --HEAD gregsadetsky/mactelnet/mactelnet
 ```
 
 ## What you get
