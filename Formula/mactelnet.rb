@@ -1,8 +1,8 @@
 class Mactelnet < Formula
   desc "Telnet/console client for MikroTik RouterOS over Layer 2 (MAC-Telnet)"
   homepage "https://github.com/haakonnessjoen/MAC-Telnet"
-  url "https://github.com/haakonnessjoen/MAC-Telnet/archive/refs/tags/v0.6.2.tar.gz"
-  sha256 "5332e09010ae34258061012c4c2a184bc0a3a7514245b981fe65557a91d5e1ad"
+  url "https://github.com/haakonnessjoen/MAC-Telnet/archive/refs/tags/v0.6.3.tar.gz"
+  sha256 "1b685568bddfe8d41cf70242a8db98968154334647b2c98c389596604e3fc38a"
   license "GPL-2.0-or-later"
 
   head "https://github.com/haakonnessjoen/MAC-Telnet.git", branch: "master"
