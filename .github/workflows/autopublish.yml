@@ -1,0 +1,65 @@
+name: Auto-publish version bumps
+
+# When CI finishes green on a PR whose branch was created by the daily
+# autobump workflow (bump-<formula>-<version>), publish it automatically:
+# merge the PR, upload the tested bottles to the GitHub Release, and commit
+# the bottle block. Human-authored PRs (any other branch name) are untouched
+# and still released via the manual "brew pr-pull" dispatch.
+
+on:
+  workflow_run:
+    workflows: ["brew test-bot"]
+    types: [completed]
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  issues: read
+  pull-requests: write
+
+jobs:
+  autopublish:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      startsWith(github.event.workflow_run.head_branch, 'bump-') &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Find open PR for bump branch
+        id: pr
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.event.workflow_run.head_branch }}
+        run: |
+          pr=$(gh pr list --repo "$GITHUB_REPOSITORY" --head "$BRANCH" --state open --json number --jq '.[0].number')
+          if [[ -z "$pr" || "$pr" == "null" ]]; then
+            echo "No open PR for $BRANCH — nothing to publish."
+            echo "number=" >> "$GITHUB_OUTPUT"
+          else
+            echo "number=$pr" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Homebrew
+        if: steps.pr.outputs.number != ''
+        uses: Homebrew/actions/setup-homebrew@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up git
+        if: steps.pr.outputs.number != ''
+        uses: Homebrew/actions/git-user-config@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+
+      - name: Pull bottles and publish release
+        if: steps.pr.outputs.number != ''
+        env:
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PULL_REQUEST: ${{ steps.pr.outputs.number }}
+        run: brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
+
+      - name: Push commits
+        if: steps.pr.outputs.number != ''
+        uses: Homebrew/actions/git-try-push@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+        with:
+          branch: main
