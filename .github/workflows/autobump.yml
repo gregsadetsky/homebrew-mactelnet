@@ -21,6 +21,9 @@ jobs:
           core: true
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Set up git
+        uses: Homebrew/actions/git-user-config@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+
       # Checks upstream (via the formula's livecheck) and opens a version-bump
       # PR when a new release tag exists; no-op when everything is current.
       #
