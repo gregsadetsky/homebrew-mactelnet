@@ -1,0 +1,34 @@
+name: Bump formulae daily
+
+on:
+  schedule:
+    - cron: "17 9 * * *" # daily, 09:17 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  autobump:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Homebrew
+        uses: Homebrew/actions/setup-homebrew@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Checks upstream (via the formula's livecheck) and opens a version-bump
+      # PR when a new release tag exists; no-op when everything is current.
+      #
+      # BUMP_TOKEN should be a fine-grained PAT (contents + pull-requests write
+      # on this repo). Without it this falls back to the default token, which
+      # still opens the PR but won't trigger test-bot on it (GitHub blocks
+      # workflows on PRs created by the default token) — push to the PR branch
+      # or close/reopen it to run CI.
+      - name: Bump packages
+        uses: Homebrew/actions/bump-packages@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
+        with:
+          token: ${{ secrets.BUMP_TOKEN || github.token }}
+          fork: false
+          formulae: gregsadetsky/mactelnet/mactelnet
