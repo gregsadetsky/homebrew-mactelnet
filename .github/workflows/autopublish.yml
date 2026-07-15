@@ -51,10 +51,12 @@ jobs:
         if: steps.pr.outputs.number != ''
         uses: Homebrew/actions/git-user-config@1f8e202ffddf94def7f42f6fa3a482e821489f9c # 2026.07.10.1
 
+      # BUMP_TOKEN (PAT) preferred: replacing an existing release asset (same-version
+      # rebuilds) needs more than the default workflow token allows.
       - name: Pull bottles and publish release
         if: steps.pr.outputs.number != ''
         env:
-          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          HOMEBREW_GITHUB_API_TOKEN: ${{ secrets.BUMP_TOKEN || secrets.GITHUB_TOKEN }}
           PULL_REQUEST: ${{ steps.pr.outputs.number }}
         run: brew pr-pull --debug --tap="$GITHUB_REPOSITORY" "$PULL_REQUEST"
 
