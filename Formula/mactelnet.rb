@@ -7,6 +7,11 @@ class Mactelnet < Formula
 
   head "https://github.com/haakonnessjoen/MAC-Telnet.git", branch: "master"
 
+  livecheck do
+    url :stable
+    regex(/^v?(\d+(?:\.\d+)+)$/i)
+  end
+
   depends_on "autoconf" => :build
   depends_on "automake" => :build
   depends_on "libtool" => :build
