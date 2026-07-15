@@ -29,8 +29,8 @@ class Mactelnet < Formula
   test do
     # mactelnet/macping print version and usage on stderr
     assert_match version.to_s, shell_output("#{bin}/mactelnet -v 2>&1")
-    assert_match "Usage", shell_output("#{bin}/mactelnet -h 2>&1")
-    assert_match "Usage", shell_output("#{bin}/macping 2>&1")
+    assert_match "Usage", shell_output("#{bin}/mactelnet -h 2>&1", 1)
+    assert_match "Usage", shell_output("#{bin}/macping 2>&1", 1)
     assert_predicate bin/"mndp", :executable?
   end
 end
